@@ -16,6 +16,7 @@ class UsersSerializer(serializers.ModelSerializer):
     last_login = serializers.DateTimeField(read_only=True)  # Solo lectura.
     created_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
     updated_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
+    deleted_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
     
     class Meta:
         model = Users
@@ -30,6 +31,7 @@ class UsersSerializer(serializers.ModelSerializer):
             self.fields['password'].required = True
     
     def create(self, validated_data):
+        # obtine el password y lo elimina del context, para que no se guarde como text palno.
         password = validated_data.pop('password', None)
         user = Users(**validated_data)
         if password:
@@ -38,6 +40,7 @@ class UsersSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
+        # obtine el password y lo elimina del context, para que no se guarde como text palno.
         password = validated_data.pop('password', None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

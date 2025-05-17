@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 # third
 # own
+from apps.core.utils.utils import validar_pk_numerico
 from apps.user.models import Users
 from apps.user.api.serializers import UsersSerializer
 
@@ -36,10 +37,9 @@ def users_actions_by_pk_api_view(request, pk, *args, **kwargs):
     model = Users
     serializer = UsersSerializer
     # validation.
-    try:
-        pk = int(pk)
-    except ValueError:
-        Response({'error': 'El ID debe ser numérico.'}, status=status.HTTP_400_BAD_REQUEST)
+    pk, error_response = validar_pk_numerico(pk)
+    if error_response:
+        return error_response
     # query.
     # user = model.objects.filter(pk=pk).first()
     user = get_object_or_404(model, is_active=True, pk=pk)

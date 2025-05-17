@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 # third
 # own
+from apps.core.utils.utils import validar_pk_numerico
 from apps.user.models import Users
 from apps.user.api.serializers import UsersSerializer
 
@@ -36,10 +37,9 @@ class UsersActionsByPkAPIView(APIView):
     # retrieve.
     def get(self, request, pk, *args, **kwargs):
         # validation.
-        try:
-            pk = int(pk)
-        except ValueError:
-            Response({'error': 'El ID debe ser numérico.'}, status=status.HTTP_400_BAD_REQUEST)
+        pk, error_response = validar_pk_numerico(pk)
+        if error_response:
+            return error_response
         # query.
         # user = self.model.objects.filter(pk=pk).first()
         user = get_object_or_404(self.model, is_active=True, pk=pk)
@@ -48,10 +48,9 @@ class UsersActionsByPkAPIView(APIView):
     # update.
     def put(self, request, pk, *args, **kwargs):
         # validation.
-        try:
-            pk = int(pk)
-        except ValueError:
-            Response({'error': 'El ID debe ser numérico.'}, status=status.HTTP_400_BAD_REQUEST)
+        pk, error_response = validar_pk_numerico(pk)
+        if error_response:
+            return error_response
         # query.
         user = get_object_or_404(self.model, is_active=True, pk=pk)
         user_serializer = self.serializer(user, data=request.data)
@@ -63,10 +62,9 @@ class UsersActionsByPkAPIView(APIView):
     # delete
     def delete(self, request, pk, *args, **kwargs):
         # validation.
-        try:
-            pk = int(pk)
-        except ValueError:
-            Response({'error': 'El ID debe ser numérico.'}, status=status.HTTP_400_BAD_REQUEST)
+        pk, error_response = validar_pk_numerico(pk)
+        if error_response:
+            return error_response
         # query.
         user = get_object_or_404(self.model, is_active=True, pk=pk)
         # elimination logical.

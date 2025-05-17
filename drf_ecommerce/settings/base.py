@@ -37,8 +37,9 @@ THIRD_APPS = [
 ]
 
 OWN_APPS = [
-    'apps.base',
+    'apps.core',
     'apps.user',
+    'apps.product',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS

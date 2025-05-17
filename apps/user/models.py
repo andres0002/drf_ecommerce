@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 # third
 from simple_history.models import HistoricalRecords
 # own
+from apps.core.models import BaseModels
 
 # Create your models here.
 
@@ -33,23 +34,25 @@ class UsersManager(BaseUserManager):
     def get_by_natural_key(self, username):
         return self.get(username=username)
 
-class Users(AbstractBaseUser, PermissionsMixin):
+class Users(AbstractBaseUser, PermissionsMixin, BaseModels):
+    """Model definition for Users."""
+
+    # TODO: Define fields here
     username = models.CharField(unique=True, max_length=255)
     email = models.EmailField(unique=True, max_length=255)
     name = models.CharField(max_length=255, blank=True, null=True)
     lastname = models.CharField(max_length=255, blank=True, null=True)
-    image = models.ImageField(upload_to='user/profile/image/', max_length=255, blank=True, null=True)
-    is_active = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='user/profile/image/', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     historical = HistoricalRecords()
     objects = UsersManager()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'name', 'lastname']
 
     class Meta:
+        """Meta definition for Users."""
+        
         verbose_name = 'User'
         verbose_name_plural = 'Users'
         ordering = ['username']
@@ -58,6 +61,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
         return (self.username,)
 
     def __str__(self):
+        """Unicode representation of Users."""
         return self.username
 
     def save(self, *args, **kwargs):
