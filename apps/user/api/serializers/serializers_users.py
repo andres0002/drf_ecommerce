@@ -6,8 +6,6 @@ from rest_framework import serializers
 # own
 from apps.user.models import Users
 
-# Create your views here.
-
 class UsersSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)

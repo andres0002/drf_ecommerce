@@ -4,8 +4,8 @@ from django.urls import path
 # drf
 # third
 # own
-from apps.user.api.views import UsersAPIView, UsersActionsByPkAPIView
-from apps.user.api.views_functionts import users_api_view, users_actions_by_pk_api_view
+from apps.user.api.views.views import UsersAPIView, UsersActionsByPkAPIView
+from apps.user.api.views.views_functionts import users_api_view, users_actions_by_pk_api_view
 
 urlpatterns = [
     # class.

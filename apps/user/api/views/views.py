@@ -9,7 +9,7 @@ from rest_framework import status
 # own
 from apps.core.utils.utils import validar_pk_numerico
 from apps.user.models import Users
-from apps.user.api.serializers import UsersSerializer
+from apps.user.api.serializers.serializers import UsersSerializer
 
 # Create your views here.
 

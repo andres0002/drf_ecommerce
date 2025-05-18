@@ -30,8 +30,8 @@ class CategoriesProductResource(resources.ModelResource):
 
 class CategoriesProductAdmin(ImportExportModelAdmin):
     search_fields = ('description',)
-    list_display = ('description','measure_unit','created_at','updated_at','deleted_at')
-    list_filter = ('measure_unit','created_at','updated_at','deleted_at')
+    list_display = ('description','created_at','updated_at','deleted_at')
+    list_filter = ('created_at','updated_at','deleted_at')
     readonly_fields = ('created_at','updated_at','deleted_at')
     ordering = ('created_at',)
     resource_classes = (CategoriesProductResource,)
@@ -43,8 +43,8 @@ class IndicatorsResource(resources.ModelResource):
 
 class IndicatorsAdmin(ImportExportModelAdmin):
     search_fields = ('descount_value',)
-    list_display = ('descount_value','category_product','created_at','updated_at','deleted_at')
-    list_filter = ('descount_value','category_product','created_at','updated_at','deleted_at')
+    list_display = ('descount_value','category','created_at','updated_at','deleted_at')
+    list_filter = ('descount_value','category','created_at','updated_at','deleted_at')
     readonly_fields = ('created_at','updated_at','deleted_at')
     ordering = ('created_at',)
     resource_classes = (IndicatorsResource,)
@@ -56,8 +56,8 @@ class ProductsResource(resources.ModelResource):
 
 class ProductsAdmin(ImportExportModelAdmin):
     search_fields = ('name','description')
-    list_display = ('name','description','created_at','updated_at','deleted_at')
-    list_filter = ('created_at','updated_at','deleted_at')
+    list_display = ('name','description','measure_unit','category','created_at','updated_at','deleted_at')
+    list_filter = ('measure_unit','category','created_at','updated_at','deleted_at')
     readonly_fields = ('created_at','updated_at','deleted_at')
     ordering = ('created_at',)
     resource_classes = (ProductsResource,)
