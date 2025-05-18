@@ -1,28 +1,21 @@
 # py
 # django
-from django.urls import path
 # from django.urls import path
 # drf
 # third
 # own
-from apps.product.api.views.views import (
-    MeasureUnitsListAPIView,
-    CategoriesProductListAPIView,
-    IndicatorsListAPIView,
-    ProductsListAPIView,
-    ProductsCreateAPIView,
-    ProductsRetrieveAPIView,
-    ProductsDestroyAPIView,
-    ProductsUpdateAPIView
-)
+from apps.product.api.urls.urls_categories_product import urlpatterns as urls_categories_product
+from apps.product.api.urls.urls_measure_units import urlpatterns as urls_measure_units
+from apps.product.api.urls.urls_indicators import urlpatterns as urls_indicators
+from apps.product.api.urls.urls_products import urlpatterns as urls_products
 
-urlpatterns = [
-    path('measure_units/', MeasureUnitsListAPIView.as_view(), name='measure_units'),
-    path('categories_product/', CategoriesProductListAPIView.as_view(), name='categories_product'),
-    path('indicators/', IndicatorsListAPIView.as_view(), name='indicators'),
-    path('products/', ProductsListAPIView.as_view(), name='products'),
-    path('products/create/', ProductsCreateAPIView.as_view(), name='products_create'),
-    path('products/detail/<int:pk>/', ProductsRetrieveAPIView.as_view(), name='products_detail'),
-    path('products/delete/<int:pk>/', ProductsDestroyAPIView.as_view(), name='products_delete'),
-    path('products/update/<int:pk>/', ProductsUpdateAPIView.as_view(), name='products_update'),
-]
+# instance de urlpatterns.
+urlpatterns = []
+# measure units.
+urlpatterns += urls_measure_units
+# categories product.
+urlpatterns += urls_categories_product
+# indicators.
+urlpatterns += urls_indicators
+# products.
+urlpatterns += urls_products
