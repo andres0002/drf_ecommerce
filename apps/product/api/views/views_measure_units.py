@@ -6,20 +6,16 @@ from rest_framework import status
 # thrid
 # own
 from apps.core.api.views.views import (
-    GeneralListCreateAPIView,
-    GeneralRetrieveUpdateDestroyAPIView
+    GeneralModelViewSets
 )
 from apps.product.api.serializers.serializers import  MeasureUnitsSerializer
 
-class MeasureUnitsListCreateAPIView(GeneralListCreateAPIView):
+class MeasureUnitsModelViewSets(GeneralModelViewSets):
     serializer_class = MeasureUnitsSerializer
 
-class MeasureUnitsRetrieveUpdateDestroyAPIView(GeneralRetrieveUpdateDestroyAPIView):
-    serializer_class = MeasureUnitsSerializer
-
-    # elimination logical. -> para elimination direct se comenta el method delete().
-    def delete(self, request, pk, *args, **kwargs):
-        measure_unit = self.get_queryset(pk)
+    # elimination logical. -> para elimination direct se comenta el method destroy().
+    def destroy(self, request, *args, **kwargs):
+        measure_unit = self.get_object()
         if measure_unit:
             measure_unit.is_active = False
             measure_unit.save()

@@ -6,20 +6,16 @@ from rest_framework import status
 # thrid
 # own
 from apps.core.api.views.views import (
-    GeneralListCreateAPIView,
-    GeneralRetrieveUpdateDestroyAPIView
+    GeneralModelViewSets
 )
 from apps.product.api.serializers.serializers import CategoriesProductSerializer
 
-class CategoriesProductListCreateAPIView(GeneralListCreateAPIView):
+class CategoriesProductModelViewSets(GeneralModelViewSets):
     serializer_class = CategoriesProductSerializer
 
-class CategoriesProductRetrieveUpdateDestroyAPIView(GeneralRetrieveUpdateDestroyAPIView):
-    serializer_class = CategoriesProductSerializer
-    
-    # elimination logical. -> para elimination direct se comenta el method delete().
-    def delete(self, request, pk, *args, **kwargs):
-        category_product = self.get_queryset(pk)
+    # elimination logical. -> para elimination direct se comenta el method destroy().
+    def destroy(self, request, *args, **kwargs):
+        category_product = self.get_object()
         if category_product:
             category_product.is_active = False
             category_product.save()

@@ -4,18 +4,14 @@
 # third
 # own
 from apps.product.api.views.views_measure_units import (
-    MeasureUnitsListCreateAPIView,
-    MeasureUnitsRetrieveUpdateDestroyAPIView
+    MeasureUnitsModelViewSets
 )
 from apps.product.api.views.views_categories_product import (
-    CategoriesProductListCreateAPIView,
-    CategoriesProductRetrieveUpdateDestroyAPIView
+    CategoriesProductModelViewSets
 )
 from apps.product.api.views.views_indicators import (
-    IndicatorsListCreateAPIView,
-    IndicatorsRetrieveUpdateDestroyAPIView
+    IndicatorsModelViewSets
 )
 from apps.product.api.views.views_products import (
-    ProductsListCreateAPIView,
-    ProductsRetrieveUpdateDestroyAPIView
+    ProductsModelViewSets
 )

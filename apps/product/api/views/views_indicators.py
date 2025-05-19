@@ -6,20 +6,16 @@ from rest_framework import status
 # thrid
 # own
 from apps.core.api.views.views import (
-    GeneralListCreateAPIView,
-    GeneralRetrieveUpdateDestroyAPIView
+    GeneralModelViewSets
 )
 from apps.product.api.serializers.serializers import IndicatorsActionsSerializer
 
-class IndicatorsListCreateAPIView(GeneralListCreateAPIView):
-    serializer_class = IndicatorsActionsSerializer
-
-class IndicatorsRetrieveUpdateDestroyAPIView(GeneralRetrieveUpdateDestroyAPIView):
+class IndicatorsModelViewSets(GeneralModelViewSets):
     serializer_class = IndicatorsActionsSerializer
 
     # elimination logical. -> para elimination direct se comenta el method delete().
-    def delete(self, request, pk, *args, **kwargs):
-        indicator = self.get_queryset(pk)
+    def destroy(self, request, *args, **kwargs):
+        indicator = self.get_object()
         if indicator:
             indicator.is_active = False
             indicator.save()
