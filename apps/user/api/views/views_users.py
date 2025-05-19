@@ -8,11 +8,15 @@ from rest_framework import status
 from apps.core.api.views.views import (
     GeneralModelViewSets
 )
-from apps.user.api.serializers.serializers import UsersActionsSerializer
+from apps.user.api.serializers.serializers import (
+    UsersViewSerializer,
+    UsersActionsSerializer
+)
 
 # Create your views here.
 
 class UsersModelViewSets(GeneralModelViewSets):
+    serializer_view_class = UsersViewSerializer
     serializer_class = UsersActionsSerializer
     
     # elimination logical -> si se quiere eliminar de forma directa solo comentar el method destroy().

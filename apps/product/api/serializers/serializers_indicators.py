@@ -5,25 +5,20 @@ from rest_framework import serializers
 # third
 # own
 from apps.product.models import Indicators
-from apps.product.api.serializers.serializers_categories_product import CategoriesProductSerializer
+from apps.product.api.serializers.serializers_categories_product import CategoriesProductViewSerializer
 
 class IndicatorsViewSerializer(serializers.ModelSerializer):
-    is_active = serializers.BooleanField(write_only=True)  # Solo en request for updation.
-    created_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    updated_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    deleted_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    
-    category = CategoriesProductSerializer()
-    
     class Meta:
         model = Indicators
         fields = '__all__'
+    
+    category = CategoriesProductViewSerializer()
 
 class IndicatorsActionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicators
         exclude = ('id','is_active','created_at','updated_at','deleted_at')
-        
+    
     def to_representation(self, instance):
         return {
             'id': instance.id,

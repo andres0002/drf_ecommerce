@@ -8,10 +8,14 @@ from rest_framework import status
 from apps.core.api.views.views import (
     GeneralModelViewSets
 )
-from apps.product.api.serializers.serializers import CategoriesProductSerializer
+from apps.product.api.serializers.serializers import (
+    CategoriesProductViewSerializer,
+    CategoriesProductActionsSerializer
+)
 
 class CategoriesProductModelViewSets(GeneralModelViewSets):
-    serializer_class = CategoriesProductSerializer
+    serializer_view_class = CategoriesProductViewSerializer
+    serializer_class = CategoriesProductActionsSerializer
 
     # elimination logical. -> para elimination direct se comenta el method destroy().
     def destroy(self, request, *args, **kwargs):

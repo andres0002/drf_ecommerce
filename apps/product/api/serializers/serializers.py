@@ -3,8 +3,14 @@
 # drf
 # third
 # own
-from apps.product.api.serializers.serializers_measure_units import MeasureUnitsSerializer
-from apps.product.api.serializers.serializers_categories_product import CategoriesProductSerializer
+from apps.product.api.serializers.serializers_measure_units import (
+    MeasureUnitsViewSerializer,
+    MeasureUnitsActionsSerializer
+)
+from apps.product.api.serializers.serializers_categories_product import (
+    CategoriesProductViewSerializer,
+    CategoriesProductActionsSerializer
+)
 from apps.product.api.serializers.serializers_indicators import (
     IndicatorsViewSerializer,
     IndicatorsActionsSerializer

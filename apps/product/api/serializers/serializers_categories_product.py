@@ -6,12 +6,12 @@ from rest_framework import serializers
 # own
 from apps.product.models import CategoriesProduct
 
-class CategoriesProductSerializer(serializers.ModelSerializer):
-    is_active = serializers.BooleanField(write_only=True)  # Solo en request for updation.
-    created_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    updated_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    deleted_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    
+class CategoriesProductViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoriesProduct
         fields = '__all__'
+
+class CategoriesProductActionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoriesProduct
+        exclude = ('id','is_active','created_at','updated_at','deleted_at')

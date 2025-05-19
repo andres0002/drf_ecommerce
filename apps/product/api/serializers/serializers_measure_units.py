@@ -6,12 +6,12 @@ from rest_framework import serializers
 # own
 from apps.product.models import MeasureUnits
 
-class MeasureUnitsSerializer(serializers.ModelSerializer):
-    is_active = serializers.BooleanField(write_only=True)  # Solo en request for updation.
-    created_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    updated_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    deleted_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    
+class MeasureUnitsViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeasureUnits
         fields = '__all__'
+
+class MeasureUnitsActionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeasureUnits
+        exclude = ('id','is_active','created_at','updated_at','deleted_at')

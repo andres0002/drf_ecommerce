@@ -9,13 +9,24 @@ from apps.core.api.views.views import (
     GeneralModelViewSets
 )
 from apps.product.api.serializers.serializers import (
+    ProductsViewSerializer,
     ProductsActionsSerializer
 )
 
 class ProductsModelViewSets(GeneralModelViewSets):
+    """
+        Comments main.
+    """
+    serializer_view_class = ProductsViewSerializer
     serializer_class = ProductsActionsSerializer
     
     def create(self, request, *args, **kwargs):
+        """
+            Comments endpoints.
+            
+            
+            dfsdfds
+        """
         product_serializer = self.serializer_class(data=request.data)
         # validation.
         if product_serializer.is_valid():

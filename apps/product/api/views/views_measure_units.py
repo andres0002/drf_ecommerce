@@ -8,10 +8,14 @@ from rest_framework import status
 from apps.core.api.views.views import (
     GeneralModelViewSets
 )
-from apps.product.api.serializers.serializers import  MeasureUnitsSerializer
+from apps.product.api.serializers.serializers import  (
+    MeasureUnitsViewSerializer,
+    MeasureUnitsActionsSerializer
+)
 
 class MeasureUnitsModelViewSets(GeneralModelViewSets):
-    serializer_class = MeasureUnitsSerializer
+    serializer_view_class = MeasureUnitsViewSerializer
+    serializer_class = MeasureUnitsActionsSerializer
 
     # elimination logical. -> para elimination direct se comenta el method destroy().
     def destroy(self, request, *args, **kwargs):

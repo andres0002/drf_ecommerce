@@ -34,6 +34,7 @@ THIRD_APPS = [
     'rest_framework',
     'simple_history',
     'import_export',
+    'drf_yasg',
 ]
 
 OWN_APPS = [
@@ -116,3 +117,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SETTINGS THIRD_APPS
+
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION': 'none',
+}
+
+REDOC_SETTINGS = {
+    'LAZY_RENDERING': False,
+}

@@ -8,9 +8,13 @@ from rest_framework import status
 from apps.core.api.views.views import (
     GeneralModelViewSets
 )
-from apps.product.api.serializers.serializers import IndicatorsActionsSerializer
+from apps.product.api.serializers.serializers import (
+    IndicatorsViewSerializer,
+    IndicatorsActionsSerializer
+)
 
 class IndicatorsModelViewSets(GeneralModelViewSets):
+    serializer_view_class = IndicatorsViewSerializer
     serializer_class = IndicatorsActionsSerializer
 
     # elimination logical. -> para elimination direct se comenta el method delete().

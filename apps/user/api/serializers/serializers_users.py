@@ -6,42 +6,32 @@ from rest_framework import serializers
 # third
 # own
 from apps.user.models import Users
-
-class GroupsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['id', 'name']
-
-class UserPermissionsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Permission
-        fields = ['id', 'codename', 'name']
+from apps.user.api.serializers.serializers import (
+    GroupsViewSerializer,
+    UserPermissionsViewSerializer
+)
 
 class UsersViewSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=False)
-    email = serializers.EmailField(required=False)
-    password = serializers.CharField(write_only=True, required=False) # write_only -> se ve solo en request -> qas o prd.
-    # password = serializers.CharField(required=False) # se ve tanto en request como en response -> dev.
-    last_login = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    created_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    updated_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    deleted_at = serializers.DateTimeField(read_only=True)  # Solo lectura.
-    # READ: Mostrar grupos y permisos anidados
-    groups = GroupsSerializer(many=True, read_only=True)
-    user_permissions = UserPermissionsSerializer(many=True, read_only=True)
-    
     class Meta:
         model = Users
-        fields = '__all__'
+        exclude = ('deleted_at','is_active','is_staff','is_superuser','password')
+    
+    groups = GroupsViewSerializer(many=True, read_only=True)
+    user_permissions = UserPermissionsViewSerializer(many=True, read_only=True)
 
 class UsersActionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        exclude = ('id','is_active','is_staff','is_superuser','last_login','created_at','updated_at','deleted_at')
+    
     username = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
-    password = serializers.CharField(write_only=True, required=False) # write_only -> se ve solo en request -> qas o prd.
-    # password = serializers.CharField(required=False) # se ve tanto en request como en response -> dev.
+    password = serializers.CharField(write_only=True, required=False)
+    
     # READ: Mostrar grupos y permisos anidados
-    groups = GroupsSerializer(many=True, read_only=True)
-    user_permissions = UserPermissionsSerializer(many=True, read_only=True)
+    groups = GroupsViewSerializer(many=True, read_only=True)
+    user_permissions = UserPermissionsViewSerializer(many=True, read_only=True)
+    
     # WRITE: Enviar solo los IDs
     group_ids = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -57,22 +47,6 @@ class UsersActionsSerializer(serializers.ModelSerializer):
         source='user_permissions',
         required=False
     )
-    
-    class Meta:
-        model = Users
-        exclude = ('id','is_active','is_staff','is_superuser','last_login','created_at','updated_at','deleted_at')
-    
-    def to_representation(self, instance):
-        return {
-            'id': instance.id,
-            'username': instance.username,
-            'email': instance.email,
-            'name': instance.name,
-            'lastname': instance.lastname,
-            'groups': GroupsSerializer(instance.groups.all(), many=True).data,
-            'user_permissions': UserPermissionsSerializer(instance.user_permissions.all(), many=True).data,
-            'image': instance.image if (instance.image != '' and instance.image != None)  else ''
-        }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
