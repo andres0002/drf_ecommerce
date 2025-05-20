@@ -50,7 +50,7 @@ urlpatterns = [
     # path('redoc/', login_required(schema_view.with_ui('redoc', cache_timeout=0)), name='schema-redoc'),
     # urls project drf_ecommerce.
     path('admin/', admin.site.urls),
-    path('auth/', include(('apps.auth_own.api.urls.urls','auth'))),
-    path('user/', include(('apps.user.api.urls.routers','user'))),
-    path('product/', include(('apps.product.api.urls.routers','product'))),
+    path('auth/', include(('apps.features.auth_own.api.urls.urls','auth'))),
+    path('user/', include(('apps.features.user.api.urls.routers','user'))),
+    path('product/', include(('apps.features.product.api.urls.routers','product'))),
 ]

@@ -40,9 +40,10 @@ THIRD_APPS = [
 
 OWN_APPS = [
     'apps.core',
-    'apps.auth_own',
-    'apps.user',
-    'apps.product',
+    'apps.shared',
+    'apps.features.auth_own',
+    'apps.features.user',
+    'apps.features.product',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS
