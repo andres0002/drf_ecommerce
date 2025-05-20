@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 # third
 # own
+from apps.auth_own.mixins.authentication_mixins import AuthenticationMixin
 from apps.core.api.views.views import (
     GeneralModelViewSets
 )
@@ -13,7 +14,7 @@ from apps.product.api.serializers.serializers import (
     ProductsActionsSerializer
 )
 
-class ProductsModelViewSets(GeneralModelViewSets):
+class ProductsModelViewSets(AuthenticationMixin, GeneralModelViewSets):
     """
         Comments main.
     """

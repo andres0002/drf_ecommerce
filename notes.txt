@@ -1,3 +1,31 @@
+# ------------------------------------------------views auth_own-------------------------------------------------------
+# 1. caso de uso -> si ya tiene un token elimina las sessions y realiza el login.
+# # gte -> mayor o igual.
+# all_sessions = Session.objects.filter(expire_date__gte=datetime.now())
+# if all_sessions.exists():
+#     for session in all_sessions:
+#         session_data = session.get_decoded()
+#         # { data del session decodificada.
+#         #     '_auth_user_id': '1',
+#         #     '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend',
+#         #     '_auth_user_hash': 'abc123...',
+#         # }
+#         if user.id == int(session_data.get('_auth_user_id')):
+#             # elimina todas las sessions del user que esta iniciando session.
+#             session.delete()
+# token.delete()
+# token = Token.objects.create(user=user)
+# return Response({
+#     "token": token.key,
+#     "user": user_serializer.data,
+#     "message": "Inicio de sesión exitoso."
+# }, status=status.HTTP_200_OK)
+# 2. caso de uso -> si ya tiene una session que no pueda ingresar.
+# token.delete()
+# return Response({
+#     'error': 'Ya se ha iniciado sesión con este user.'
+# },  status=status.HTTP_409_CONFLICT)
+# ------------------------------------------------views auth_own-------------------------------------------------------
 # ------------------------------------------------views core-------------------------------------------------------
 class GeneralListAPIView(ListAPIView):
     serializer_class = None

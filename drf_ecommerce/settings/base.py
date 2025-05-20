@@ -32,6 +32,7 @@ BASE_APPS = [
 THIRD_APPS = [
     'django_extensions',
     'rest_framework',
+    'rest_framework.authtoken',
     'simple_history',
     'import_export',
     'drf_yasg',
@@ -39,6 +40,7 @@ THIRD_APPS = [
 
 OWN_APPS = [
     'apps.core',
+    'apps.auth_own',
     'apps.user',
     'apps.product',
 ]
@@ -127,3 +129,12 @@ SWAGGER_SETTINGS = {
 REDOC_SETTINGS = {
     'LAZY_RENDERING': False,
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',     # Para login con token (header Authorization)
+        'rest_framework.authentication.SessionAuthentication',   # Para login con sesiones (cookies, navegador, admin)
+    ]
+}
+
+TOKEN_EXPIRED_AFTER_SECONDS = 900 # 900 -> seconds -> equivalentes a 15 minutes.
