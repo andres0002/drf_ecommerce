@@ -36,6 +36,7 @@ THIRD_APPS = [
     'simple_history',
     'import_export',
     'drf_yasg',
+    'corsheaders',
 ]
 
 OWN_APPS = [
@@ -51,6 +52,7 @@ INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -123,14 +125,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # SETTINGS THIRD_APPS
 
+# swagger
 SWAGGER_SETTINGS = {
     'DOC_EXPANSION': 'none',
 }
-
+# redoc from swagger
 REDOC_SETTINGS = {
     'LAZY_RENDERING': False,
 }
 
+# authtoken
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',     # Para login con token (header Authorization)
@@ -139,3 +143,20 @@ REST_FRAMEWORK = {
 }
 
 TOKEN_EXPIRED_AFTER_SECONDS = 900 # 900 -> seconds -> equivalentes a 15 minutes.
+
+# config cors
+# CORS_ALLOWED_ORIGINS = [
+#     "http://127.0.0.1:3000",
+#     "http://localhost:3000",
+#     "https://127.0.0.1:3000",
+#     "https://localhost:3000",
+# ]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+    "https://127.0.0.1:3000",
+    "https://localhost:3000",
+]
+
+# SETTINGS OWN_APPS

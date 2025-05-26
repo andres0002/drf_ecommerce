@@ -23,7 +23,7 @@ class Login(ObtainAuthToken):
     
     @swagger_auto_schema(
         tags=["🔹 Auth"],
-        operation_id="auth",
+        operation_id="auth_login",
         operation_description="Login de usuario y generación de token.",
         responses={
             200: openapi.Response(description="Inicio de sesión exitoso"),
@@ -90,12 +90,12 @@ class Logout(APIView):
             "session_message": f"{deleted_sessions} sesión(es) eliminada(s)."
         }, status=status.HTTP_200_OK)
 
-class UserTokenRefresh(APIView):
+class RefreshToken(APIView):
     # permission_classes = (IsAuthenticated,)
     
     @swagger_auto_schema(
         tags=["🔹 Auth"],
-        operation_id="actualizar_token",
+        operation_id="auth_refresh_token",
         operation_description="Actualización de token.",
         manual_parameters=[
             openapi.Parameter(
