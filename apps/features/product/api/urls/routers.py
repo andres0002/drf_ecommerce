@@ -6,22 +6,30 @@ from rest_framework.routers import DefaultRouter
 # third
 # own
 from apps.features.product.api.views.views import (
-    MeasureUnitsModelViewSets,
-    CategoriesProductModelViewSets,
-    IndicatorsModelViewSets,
-    ProductsModelViewSets
+    PublicMeasureUnitsViewSets,
+    PrivateMeasureUnitsModelViewSets,
+    PublicCategoriesProductViewSets,
+    PrivateCategoriesProductModelViewSets,
+    PublicIndicatorsViewSets,
+    PrivateIndicatorsModelViewSets,
+    PublicProductsViewSets,
+    PrivateProductsModelViewSets
 )
 
 router = DefaultRouter()
 
 # measure units.
-router.register(r'measure_units', MeasureUnitsModelViewSets, basename='measure_units')
+router.register(r'public_measure_units', PublicMeasureUnitsViewSets, basename='public_measure_units')
+router.register(r'private_measure_units', PrivateMeasureUnitsModelViewSets, basename='private_measure_units')
 # categories product.
-router.register(r'categories_product', CategoriesProductModelViewSets, basename='categories_product')
+router.register(r'public_categories_product', PublicCategoriesProductViewSets, basename='public_categories_product')
+router.register(r'private_categories_product', PrivateCategoriesProductModelViewSets, basename='private_categories_product')
 # indicators.
-router.register(r'indicators', IndicatorsModelViewSets, basename='indicators')
+router.register(r'public_indicators', PublicIndicatorsViewSets, basename='public_indicators')
+router.register(r'private_indicators', PrivateIndicatorsModelViewSets, basename='private_indicators')
 # products.
-router.register(r'products', ProductsModelViewSets, basename='products')
+router.register(r'public_products', PublicProductsViewSets, basename='public_products')
+router.register(r'private_products', PrivateProductsModelViewSets, basename='private_products')
 
 # instance urlpatterns.
 urlpatterns = []

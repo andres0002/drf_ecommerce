@@ -6,7 +6,8 @@ from rest_framework import status
 # third
 # own
 from apps.core.api.views.views import (
-    GeneralModelViewSets
+    PublicGeneralViewSets,
+    PrivateGeneralModelViewSets
 )
 from apps.features.user.api.serializers.serializers import (
     UserPermissionsViewSerializer,
@@ -15,7 +16,19 @@ from apps.features.user.api.serializers.serializers import (
 
 # Create your views here.
 
-class UserPermissionsModelViewSets(GeneralModelViewSets):
+class PublicUserPermissionsViewSets(PublicGeneralViewSets):
+    serializer_class = UserPermissionsViewSerializer
+    
+    def get_queryset(self):
+        model = self.get_serializer_class().Meta.model
+        return model.objects.all()
+    
+    def list(self, request, *args, **kwargs):
+        permissions = self.get_queryset()
+        permissions_serializer = self.serializer_class(permissions, many = True)
+        return Response(permissions_serializer.data,status=status.HTTP_200_OK)
+
+class PrivateUserPermissionsModelViewSets(PrivateGeneralModelViewSets):
     serializer_view_class = UserPermissionsViewSerializer
     serializer_class = UserPermissionsActionsSerializer
     

@@ -6,14 +6,23 @@ from rest_framework import status
 # thrid
 # own
 from apps.core.api.views.views import (
-    GeneralModelViewSets
+    PublicGeneralViewSets,
+    PrivateGeneralModelViewSets
 )
 from apps.features.product.api.serializers.serializers import  (
     MeasureUnitsViewSerializer,
     MeasureUnitsActionsSerializer
 )
 
-class MeasureUnitsModelViewSets(GeneralModelViewSets):
+class PublicMeasureUnitsViewSets(PublicGeneralViewSets):
+    serializer_class = MeasureUnitsViewSerializer
+    
+    def list(self, request, *args, **kwargs):
+        measure_units = self.get_queryset()
+        measure_units_serializer = self.serializer_class(measure_units, many = True)
+        return Response(measure_units_serializer.data,status=status.HTTP_200_OK)
+
+class PrivateMeasureUnitsModelViewSets(PrivateGeneralModelViewSets):
     serializer_view_class = MeasureUnitsViewSerializer
     serializer_class = MeasureUnitsActionsSerializer
 

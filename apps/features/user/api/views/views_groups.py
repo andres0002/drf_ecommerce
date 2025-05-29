@@ -6,7 +6,8 @@ from rest_framework import status
 # third
 # own
 from apps.core.api.views.views import (
-    GeneralModelViewSets
+    PublicGeneralViewSets,
+    PrivateGeneralModelViewSets
 )
 from apps.features.user.api.serializers.serializers import (
     GroupsViewSerializer,
@@ -15,7 +16,19 @@ from apps.features.user.api.serializers.serializers import (
 
 # Create your views here.
 
-class GroupsModelViewSets(GeneralModelViewSets):
+class PublicGroupsViewSets(PublicGeneralViewSets):
+    serializer_class = GroupsViewSerializer
+    
+    def get_queryset(self):
+        model = self.get_serializer_class().Meta.model
+        return model.objects.all()
+    
+    def list(self, request, *args, **kwargs):
+        groups = self.get_queryset()
+        groups_serializer = self.serializer_class(groups, many = True)
+        return Response(groups_serializer.data,status=status.HTTP_200_OK)
+
+class PrivateGroupsModelViewSets(PrivateGeneralModelViewSets):
     serializer_view_class = GroupsViewSerializer
     serializer_class = GroupsActionsSerializer
     

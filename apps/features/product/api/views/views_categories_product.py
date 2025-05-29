@@ -6,14 +6,23 @@ from rest_framework import status
 # thrid
 # own
 from apps.core.api.views.views import (
-    GeneralModelViewSets
+    PublicGeneralViewSets,
+    PrivateGeneralModelViewSets
 )
 from apps.features.product.api.serializers.serializers import (
     CategoriesProductViewSerializer,
     CategoriesProductActionsSerializer
 )
 
-class CategoriesProductModelViewSets(GeneralModelViewSets):
+class PublicCategoriesProductViewSets(PublicGeneralViewSets):
+    serializer_class = CategoriesProductViewSerializer
+    
+    def list(self, request, *args, **kwargs):
+        categories_product = self.get_queryset()
+        categories_product_serializer = self.serializer_class(categories_product, many = True)
+        return Response(categories_product_serializer.data,status=status.HTTP_200_OK)
+
+class PrivateCategoriesProductModelViewSets(PrivateGeneralModelViewSets):
     serializer_view_class = CategoriesProductViewSerializer
     serializer_class = CategoriesProductActionsSerializer
 

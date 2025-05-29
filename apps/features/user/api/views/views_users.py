@@ -6,7 +6,8 @@ from rest_framework import status
 # third
 # own
 from apps.core.api.views.views import (
-    GeneralModelViewSets
+    PublicGeneralViewSets,
+    PrivateGeneralModelViewSets
 )
 from apps.features.user.api.serializers.serializers import (
     UsersViewSerializer,
@@ -15,7 +16,15 @@ from apps.features.user.api.serializers.serializers import (
 
 # Create your views here.
 
-class UsersModelViewSets(GeneralModelViewSets):
+class PublicUsersViewSets(PublicGeneralViewSets):
+    serializer_class = UsersViewSerializer
+    
+    def list(self, request, *args, **kwargs):
+        users = self.get_queryset()
+        users_serializer = self.serializer_class(users, many = True)
+        return Response(users_serializer.data,status=status.HTTP_200_OK)
+
+class PrivateUsersModelViewSets(PrivateGeneralModelViewSets):
     serializer_view_class = UsersViewSerializer
     serializer_class = UsersActionsSerializer
     

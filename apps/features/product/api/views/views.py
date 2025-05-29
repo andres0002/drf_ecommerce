@@ -4,14 +4,18 @@
 # third
 # own
 from apps.features.product.api.views.views_measure_units import (
-    MeasureUnitsModelViewSets
+    PublicMeasureUnitsViewSets,
+    PrivateMeasureUnitsModelViewSets
 )
 from apps.features.product.api.views.views_categories_product import (
-    CategoriesProductModelViewSets
+    PublicCategoriesProductViewSets,
+    PrivateCategoriesProductModelViewSets
 )
 from apps.features.product.api.views.views_indicators import (
-    IndicatorsModelViewSets
+    PublicIndicatorsViewSets,
+    PrivateIndicatorsModelViewSets
 )
 from apps.features.product.api.views.views_products import (
-    ProductsModelViewSets
+    PublicProductsViewSets,
+    PrivateProductsModelViewSets
 )

@@ -5,10 +5,16 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 # third
 from drf_yasg.inspectors import SwaggerAutoSchema
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework_simplejwt.authentication import JWTAuthentication
 # own
+from apps.core.mixins import (
+    ExplicitPermissionRequiredMixin,
+    AutoPermissionRequiredMixin
+)
 from apps.core.api.serializers.serializers import BulkDeleteSerializer
 
 # Generar tag automatico de swagger por model.
@@ -20,7 +26,25 @@ class AutoTagSchema(SwaggerAutoSchema):
             return [f"🔹 {model.__name__}"]
         return ['NoTag']
 
-class GeneralModelViewSets(viewsets.ModelViewSet):
+class PublicGeneralViewSets(ExplicitPermissionRequiredMixin, viewsets.ViewSet):
+    authentication_classes = []  # <- Desactiva autenticación automática
+    permission_classes = (AllowAny,)
+    
+    serializer_class = None
+    swagger_schema = AutoTagSchema # para definir tag por model automaticamente.
+    
+    def get_serializer_class(self):
+        return self.serializer_class
+
+    def get_queryset(self):
+        # Modificar el queryset para obtener solo objects activos.
+        model = self.get_serializer_class().Meta.model
+        return model.objects.filter(is_active=True)
+
+class PrivateGeneralModelViewSets(AutoPermissionRequiredMixin, viewsets.ModelViewSet):
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
     serializer_class = None
     serializer_view_class = None  # Solo para lectura.
     swagger_schema = AutoTagSchema # para definir tag por model automaticamente.
