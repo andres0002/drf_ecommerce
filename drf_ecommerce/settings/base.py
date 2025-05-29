@@ -64,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'apps.features.auth_own.middlewares.SwaggerAndReDocLoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'drf_ecommerce.urls'
@@ -107,6 +108,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # (incluyendo autenticación, relaciones con otros modelos, formularios de usuario, etc.)".
 AUTH_USER_MODEL = 'user.Users'
 
+# Cuando se requiera login, Django redirige aquí
+LOGIN_URL = '/accounts/login/'  # Redirecciona al login si no está autenticado
+
+# Después del login exitoso, redirige aquí
+LOGIN_REDIRECT_URL = '/swagger/' # Redirecciona al swagger si no se define el next en el login.html
+
+# URL para cerrar sesión (opcional)
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -132,7 +142,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # swagger
 SWAGGER_SETTINGS = {
-    'DOC_EXPANSION': 'none',
+    'USE_SESSION_AUTH': False,  # Desactiva el login de sesión de Django Admin
+    'DOC_EXPANSION': 'none', # comprime los endpoints por default
+    'SECURITY_DEFINITIONS': {
+        # authtoken
+        # 'Token': {
+        #     'type': 'apiKey',
+        #     'in': 'header',
+        #     'name': 'Authorization',
+        #     'description': "Añade el token con el formato: Token <tu_token>",
+        # },
+        # simplejwt
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': "Usa el formato: Bearer <tu_token_jwt>",
+        }
+    },
 }
 # redoc from swagger
 REDOC_SETTINGS = {
@@ -143,10 +170,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # authtoken
         # 'apps.features.auth_own.authentication.CustomAuthentication', # Authentication with token (header Authorization) custom.
-        # 'rest_framework.authentication.SessionAuthentication', # Para login con sesiones (cookies, navegador, admin) default.
         # simplejwt
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication', # Para login con sesiones (cookies, navegador, admin) default.
     ),
     # simplejwt or authtoken
     'DEFAULT_PERMISSION_CLASSES': (
@@ -156,7 +181,7 @@ REST_FRAMEWORK = {
 
 # simplejwt
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

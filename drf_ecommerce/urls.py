@@ -18,9 +18,11 @@ Including another URLconf
 # django
 from django.contrib import admin
 from django.urls import path, include
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 # drf
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 # third
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -36,21 +38,28 @@ schema_view = get_schema_view(
         license=openapi.License(name="BSD License"),
     ),
     # en el False debe ir la variable de .env.
-    public=False if False else True,
-    permission_classes=(permissions.IsAuthenticated if False else permissions.AllowAny,),
+    public=False,
+    permission_classes=(IsAuthenticated,), # Solo usuarios logueados pueden ver el Swagger
+    authentication_classes=(SessionAuthentication,), # Solo login Django para Swagger
 )
 
 urlpatterns = [
-    # swagger documentation.
-    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    # path('swagger<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-json'),
-    # path('swagger/', login_required(schema_view.with_ui('swagger', cache_timeout=0)), name='schema-swagger-ui'),
-    # path('redoc/', login_required(schema_view.with_ui('redoc', cache_timeout=0)), name='schema-redoc'),
-    # urls project drf_ecommerce.
+    # urls django
     path('admin/', admin.site.urls),
+    # urls project drf_ecommerce.
     path('auth/', include(('apps.features.auth_own.api.urls.urls','auth'))),
     path('user/', include(('apps.features.user.api.urls.routers','user'))),
     path('product/', include(('apps.features.product.api.urls.routers','product'))),
 ]
+
+# development
+if settings.DEBUG:
+    urlpatterns += [
+        # urls django
+        path('accounts/', include('django.contrib.auth.urls')),
+        # urls swagger documentation.
+        path('swagger<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-swagger-json'),
+        path('swagger/', login_required(schema_view.with_ui('swagger', cache_timeout=0)), name='schema-swagger-ui'),
+        path('redoc<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-redoc-json'),
+        path('redoc/', login_required(schema_view.with_ui('redoc', cache_timeout=0)), name='schema-redoc-ui'),
+    ]
