@@ -60,14 +60,14 @@ class ExplicitPermissionRequiredMixin:
         # Acciones de solo lectura (permitidas para todos)
         if self.action in ['list', 'retrieve']:
             return True
+
+        if user.is_authenticated and user.is_superuser and user.is_active:
+            return True
         
         # Acciones protegidas: requieren permisos explícitos
         perms = self.get_required_permissions()
         if not perms:
             return False  # Si no hay permisos definidos, deniega
-
-        if user.is_authenticated and user.is_superuser:
-            return True
 
         if user.is_authenticated and user.is_staff and user.is_active:
             if isinstance(perms, str):
@@ -173,7 +173,7 @@ class AutoPermissionRequiredMixin:
     def has_action_permission(self):
         user = self.request.user
 
-        if user.is_authenticated and user.is_superuser:
+        if user.is_authenticated and user.is_superuser and user.is_active:
             return True
 
         if user.is_authenticated and user.is_staff and user.is_active:
