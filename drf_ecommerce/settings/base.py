@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+# py
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +33,11 @@ BASE_APPS = [
 THIRD_APPS = [
     'django_extensions',
     'rest_framework',
+    # authtoken
     'rest_framework.authtoken',
+    # simplejwt
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'simple_history',
     'import_export',
     'drf_yasg',
@@ -134,15 +139,31 @@ REDOC_SETTINGS = {
     'LAZY_RENDERING': False,
 }
 
-# authtoken
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',     # Para login con token (header Authorization)
-        'rest_framework.authentication.SessionAuthentication',   # Para login con sesiones (cookies, navegador, admin)
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # authtoken
+        # 'apps.features.auth_own.authentication.CustomAuthentication', # Authentication with token (header Authorization) custom.
+        # 'rest_framework.authentication.SessionAuthentication', # Para login con sesiones (cookies, navegador, admin) default.
+        # simplejwt
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication', # Para login con sesiones (cookies, navegador, admin) default.
+    ),
+    # simplejwt or authtoken
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
 }
 
-TOKEN_EXPIRED_AFTER_SECONDS = 900 # 900 -> seconds -> equivalentes a 15 minutes.
+# simplejwt
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}
+
+# authtoken
+TOKEN_EXPIRED_AFTER_SECONDS = 900 # 900 -> seconds -> equivalentes a 15 minutes -> expired token.
 
 # config cors
 # CORS_ALLOWED_ORIGINS = [

@@ -1,59 +1,72 @@
 # py
 from datetime import datetime
 # django
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate
 from django.contrib.sessions.models import Session
+from django.conf import settings
 # drf
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 # third
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView
+)
+from rest_framework_simplejwt.tokens import RefreshToken as RT, TokenError
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 # own
-from apps.features.user.models import Users
+from apps.features.auth_own.api.serializers.serializers import CustomTokenObtainPairSerializer
 from apps.features.user.api.serializers.serializers import UsersViewSerializer
 
 # Create your views here.
 
-class Login(ObtainAuthToken):
+class Login(TokenObtainPairView):
+    authentication_classes = []  # <- Desactiva autenticación automática
+    permission_classes = (AllowAny,)
+    
+    serializer_class = CustomTokenObtainPairSerializer
     
     @swagger_auto_schema(
         tags=["🔹 Auth"],
         operation_id="auth_login",
-        operation_description="Login de usuario y generación de token.",
+        operation_description="Login de usuario y generación de tokens de access and refresh.",
         responses={
             200: openapi.Response(description="Inicio de sesión exitoso"),
-            400: "Credenciales inválidas",
-            401: "Usuario inactivo",
-            409: "Usuario ya autenticado"
+            400: "Credenciales inválidas"
         }
     )
     def post(self, request, *args, **kwargs):
-        login_serializer = self.serializer_class(data=request.data, context={'request':request})
-        if login_serializer.is_valid():
-            user = login_serializer.validated_data['user']
-            if user.is_active:
-                token, created = Token.objects.get_or_create(user=user)
+        username = request.data.get('username', '')
+        password = request.data.get('password', '')
+        user = authenticate(
+            username=username,
+            password=password
+        )
+        if user:
+            login_serializer = self.serializer_class(data=request.data)
+            if login_serializer.is_valid():
                 user_serializer = UsersViewSerializer(user)
-                if created:
-                    return Response({
-                        "token": token.key,
-                        "user": user_serializer.data,
-                        "message": "Inicio de sesión exitoso."
-                    }, status=status.HTTP_200_OK)
-                else:
-                    # Eliminar el token del usuario
-                    token.delete()
-                    return Response({
-                        'error': 'Ya se ha iniciado sesión con este user.'
-                    },  status=status.HTTP_409_CONFLICT)
-            else:
-                return Response({'error':'Este usuario no puede iniciar sesión.'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response({'error':'Username o Password incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({
+                    'token': login_serializer.validated_data.get('access'),
+                    'refresh_token': login_serializer.validated_data.get('refresh'),
+                    'user': user_serializer.data,
+                    "message": "Inicio de sesión exitoso."
+                }, status=status.HTTP_200_OK)
+            return Response({
+                'error':'Username o Password incorrectos'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'error':'Username o Password incorrectos'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+def clean_expired_tokens():
+    now = datetime.now()
+    BlacklistedToken.objects.filter(token__expires_at__lt=now).delete()
+    OutstandingToken.objects.filter(expires_at__lt=now).delete()
 
 class Logout(APIView):
     permission_classes = (IsAuthenticated,)
@@ -61,7 +74,14 @@ class Logout(APIView):
     @swagger_auto_schema(
         tags=["🔹 Auth"],
         operation_id="auth_logout",
-        operation_description="Logout de usuario, elimina token y sesiones activas.",
+        operation_description="Logout de usuario, elimina tokens de access and refresh.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='Token de refresco'),
+            },
+            required=['refresh']
+        ),
         responses={
             200: openapi.Response(description="Logout exitoso"),
             401: "Credenciales inválidas o no autenticado"
@@ -69,8 +89,13 @@ class Logout(APIView):
     )
     def post(self, request, *args, **kwargs):
         user = request.user
+        refresh_token = request.data.get("refresh", '')
+        token_message = "Token de refresh no proporcionado."
         
-        token = Token.objects.filter(user=user).first()
+        if not refresh_token:
+            return Response({
+                'error': token_message
+            }, status=status.HTTP_401_UNAUTHORIZED)
         
         # Eliminar sesiones activas del usuario
         sessions = Session.objects.filter(expire_date__gte=datetime.now())
@@ -81,46 +106,33 @@ class Logout(APIView):
             if str(user.id) == str(data.get('_auth_user_id')):
                 session.delete()
                 deleted_sessions += 1
+
+        if refresh_token:
+            try:
+                token = RT(refresh_token)
+                token.blacklist()
+                token_message = "Token de refresh invalidado correctamente."
+            except TokenError as e:
+                token_message = f"Error al invalidar token: {str(e)}"
         
-        # Eliminar el token del usuario
-        token.delete()
+        # Limpieza de tokens solo en desarrollo
+        if settings.DEBUG:
+            clean_expired_tokens()
         
         return Response({
-            "token_message": "Token eliminado correctamente.",
+            "token_message": token_message,
             "session_message": f"{deleted_sessions} sesión(es) eliminada(s)."
         }, status=status.HTTP_200_OK)
 
-class RefreshToken(APIView):
-    # permission_classes = (IsAuthenticated,)
-    
+class RefreshToken(TokenRefreshView):
     @swagger_auto_schema(
         tags=["🔹 Auth"],
-        operation_id="auth_refresh_token",
-        operation_description="Actualización de token.",
-        manual_parameters=[
-            openapi.Parameter(
-                'username',
-                openapi.IN_QUERY,
-                description="Username de la sesión.",
-                type=openapi.TYPE_STRING,
-                required=True
-            )
-        ],
+        operation_id="auth_token_refresh",
+        operation_description="Refrescar token JWT.",
         responses={
-            200: openapi.Response(description="Actualización del token exitoso"),
-            400: "Username no proporcionado",
-            404: "Usuario no encontrado"
+            200: openapi.Response(description="Token actualizado correctamente"),
+            401: "Token inválido o expirado",
         }
     )
-    def get(self, request, *args, **kwargs):
-        username = request.GET.get('username')
-
-        if not username:
-            return Response({"error": "Username no proporcionado."}, status=status.HTTP_400_BAD_REQUEST)
-
-        user = Users.objects.filter(username=username).first()
-        if not user:
-            return Response({"error": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
-
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key}, status=status.HTTP_200_OK)
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

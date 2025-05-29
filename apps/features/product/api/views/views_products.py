@@ -3,9 +3,9 @@
 # drf
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 # third
 # own
-from apps.features.auth_own.mixins.authentication_mixins import AuthenticationMixin
 from apps.core.api.views.views import (
     GeneralModelViewSets
 )
@@ -14,10 +14,11 @@ from apps.features.product.api.serializers.serializers import (
     ProductsActionsSerializer
 )
 
-class ProductsModelViewSets(AuthenticationMixin, GeneralModelViewSets):
+class ProductsModelViewSets(GeneralModelViewSets):
     """
         Comments main.
     """
+    # permission_classes = (IsAuthenticated,)
     serializer_view_class = ProductsViewSerializer
     serializer_class = ProductsActionsSerializer
     

@@ -1,20 +1,25 @@
 # py
 from datetime import timedelta
+from datetime import datetime
 # django
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.sessions.models import Session
 # drf
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication, get_authorization_header, BaseAuthentication
+from rest_framework.renderers import JSONRenderer
+from rest_framework.exceptions import AuthenticationFailed
 # third
 # own
 
 class ExpiringTokenAuthentication(TokenAuthentication):
-    expired = False
     
     # calculo tiempo de expiración.
     def expires_in(self, token):
-        time_elapse = timezone.now() - token.created
-        left_time = timedelta(seconds=settings.TOKEN_EXPIRED_AFTER_SECONDS) - time_elapse
+        time_elapsed = timezone.now() - token.created
+        left_time = timedelta(seconds=settings.TOKEN_EXPIRED_AFTER_SECONDS) - time_elapsed
         return left_time
     
     # validate si el token ya expired.
@@ -25,29 +30,52 @@ class ExpiringTokenAuthentication(TokenAuthentication):
     def token_expire_handler(self, token, model, user):
         is_expire = self.is_token_expired(token)
         if is_expire:
-            self.expired = True
             # logical de si el token ya expiro.
             token.delete()
             # se actualiza el token sin necesidad de cerrar las sessions.
             token = model.objects.create(user=user)
-        return is_expire, token
+        return token
     
     def authenticate_credentials(self, key):
-        message, token, user = None, None, None
+        user, token = None, None
         model = self.get_model()
         try:
             token = model.objects.select_related('user').get(key=key)
             user = token.user
+            token = self.token_expire_handler(token, model, user)
+            user = token.user
         except model.DoesNotExist:
-            message = 'Invalid token.'
-            self.expired = True
+            raise AuthenticationFailed('Token inválido o expirado.')
         
-        if token is not None:
-            if not token.user.is_active:
-                message = 'User inactive or deleted.'
-        
-            is_expired, token = self.token_expire_handler(token, model, user)
-            if is_expired:
-                message = 'Su Token ha expirado.'
-        
-        return (user, token, message, self.expired)
+        return (user, token)
+
+class CustomAuthentication(BaseAuthentication):
+    user, token = None, None
+    
+    def get_user(self, request):
+        token = get_authorization_header(request).split()
+        if token:
+            try:
+                token = token[1].decode()
+            except:
+                return (None, None)
+            
+            token_expire = ExpiringTokenAuthentication()
+            user, token = token_expire.authenticate_credentials(token)
+            
+            if user != None and token != None:
+                self.user = user
+                self.token = token
+                return (user, token)
+            
+        return (None, None)
+    
+    def authenticate(self, request):
+        auth = get_authorization_header(request).split()
+        if not auth or len(auth) != 2:
+            # Correcto: indica que no se autenticó y se sigue evaluando otras clases de auth
+            return None  # No se envió token → permite continuar (por ejemplo, en login) o endpoints publics.
+        self.get_user(request)
+        if self.user is None and self.token is None:
+            raise AuthenticationFailed('No se han enviado las credentials.')
+        return (self.user, self.token)
