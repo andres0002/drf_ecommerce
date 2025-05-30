@@ -16,11 +16,12 @@ from apps.features.product.api.serializers.serializers import (
 )
 
 class PublicProductsViewSets(PublicGeneralViewSets):
-    serializer_class = ProductsViewSerializer
+    serializer_class = ProductsActionsSerializer
+    serializer_view_class = ProductsViewSerializer
     
     def list(self, request, *args, **kwargs):
         products = self.get_queryset()
-        products_serializer = self.serializer_class(products, many = True)
+        products_serializer = self.get_serializer(products, many = True)
         return Response(products_serializer.data,status=status.HTTP_200_OK)
 
 class PrivateProductsModelViewSets(PrivateGeneralModelViewSets):

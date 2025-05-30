@@ -15,11 +15,12 @@ from apps.features.product.api.serializers.serializers import (
 )
 
 class PublicIndicatorsViewSets(PublicGeneralViewSets):
-    serializer_class = IndicatorsViewSerializer
+    serializer_class = IndicatorsActionsSerializer
+    serializer_view_class = IndicatorsViewSerializer
     
     def list(self, request, *args, **kwargs):
         indicators = self.get_queryset()
-        indicators_serializer = self.serializer_class(indicators, many = True)
+        indicators_serializer = self.get_serializer(indicators, many = True)
         return Response(indicators_serializer.data,status=status.HTTP_200_OK)
 
 class PrivateIndicatorsModelViewSets(PrivateGeneralModelViewSets):

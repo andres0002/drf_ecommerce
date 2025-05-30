@@ -1,5 +1,6 @@
 # py
 # django
+from django.shortcuts import get_object_or_404
 # drf
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -31,15 +32,41 @@ class PublicGeneralViewSets(ExplicitPermissionRequiredMixin, viewsets.ViewSet):
     permission_classes = (AllowAny,)
     
     serializer_class = None
+    serializer_view_class = None  # Solo para lectura.
     swagger_schema = AutoTagSchema # para definir tag por model automaticamente.
     
     def get_serializer_class(self):
-        return self.serializer_class
+        # Si es un método de solo lectura (list o retrieve), usa el serializer de vista.
+        if self.action in ['list', 'retrieve'] and self.serializer_view_class:
+            return self.serializer_view_class
+        return self.serializer_class  # Para otros métodos (create, update, etc.).
+    
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        return serializer_class(*args, **kwargs)
 
     def get_queryset(self):
         # Modificar el queryset para obtener solo objects activos.
         model = self.get_serializer_class().Meta.model
         return model.objects.filter(is_active=True)
+    
+    # para slug se require un campo slug unico en el model.
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_value = self.kwargs.get('pk')
+
+        if lookup_value.isdigit():
+            lookup_field = 'pk'
+        else:
+            lookup_field = 'slug'
+
+        obj = get_object_or_404(queryset, **{lookup_field: lookup_value})
+        
+        # 👇 Llama a permisos a nivel de objeto
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
 
 class PrivateGeneralModelViewSets(AutoPermissionRequiredMixin, viewsets.ModelViewSet):
     authentication_classes = (JWTAuthentication,)
@@ -57,7 +84,7 @@ class PrivateGeneralModelViewSets(AutoPermissionRequiredMixin, viewsets.ModelVie
 
     def get_queryset(self):
         # Modificar el queryset para obtener solo objects activos.
-        model = self.get_serializer().Meta.model
+        model = self.get_serializer_class().Meta.model
         return model.objects.filter(is_active=True)
     
     @swagger_auto_schema(
@@ -91,3 +118,43 @@ class PrivateGeneralModelViewSets(AutoPermissionRequiredMixin, viewsets.ModelVie
         # elimination direct.
         deleted, _ = self.get_queryset().filter(id__in=ids).delete()
         return Response({'deleted': deleted}, status=status.HTTP_204_NO_CONTENT)
+
+class PrivateGeneralViewSets(AutoPermissionRequiredMixin, viewsets.ViewSet):
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
+    serializer_class = None
+    serializer_view_class = None  # Solo para lectura.
+    swagger_schema = AutoTagSchema # para definir tag por model automaticamente.
+    
+    def get_serializer_class(self):
+        # Si es un método de solo lectura (list o retrieve), usa el serializer de vista.
+        if self.action in ['list', 'retrieve'] and self.serializer_view_class:
+            return self.serializer_view_class
+        return self.serializer_class  # Para otros métodos (create, update, etc.).
+    
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        return serializer_class(*args, **kwargs)
+
+    def get_queryset(self):
+        # Modificar el queryset para obtener solo objects activos.
+        model = self.get_serializer_class().Meta.model
+        return model.objects.filter(is_active=True)
+    
+    # para slug se require un campo slug unico en el model.
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_value = self.kwargs.get('pk')
+
+        if lookup_value.isdigit():
+            lookup_field = 'pk'
+        else:
+            lookup_field = 'slug'
+
+        obj = get_object_or_404(queryset, **{lookup_field: lookup_value})
+        
+        # 👇 Llama a permisos a nivel de objeto
+        self.check_object_permissions(self.request, obj)
+
+        return obj

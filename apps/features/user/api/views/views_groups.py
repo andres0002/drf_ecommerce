@@ -17,7 +17,8 @@ from apps.features.user.api.serializers.serializers import (
 # Create your views here.
 
 class PublicGroupsViewSets(PublicGeneralViewSets):
-    serializer_class = GroupsViewSerializer
+    serializer_class = GroupsActionsSerializer
+    serializer_view_class = GroupsViewSerializer
     
     def get_queryset(self):
         model = self.get_serializer_class().Meta.model
@@ -25,7 +26,7 @@ class PublicGroupsViewSets(PublicGeneralViewSets):
     
     def list(self, request, *args, **kwargs):
         groups = self.get_queryset()
-        groups_serializer = self.serializer_class(groups, many = True)
+        groups_serializer = self.get_serializer(groups, many = True)
         return Response(groups_serializer.data,status=status.HTTP_200_OK)
 
 class PrivateGroupsModelViewSets(PrivateGeneralModelViewSets):

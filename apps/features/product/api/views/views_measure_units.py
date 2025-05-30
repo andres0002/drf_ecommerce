@@ -15,11 +15,12 @@ from apps.features.product.api.serializers.serializers import  (
 )
 
 class PublicMeasureUnitsViewSets(PublicGeneralViewSets):
-    serializer_class = MeasureUnitsViewSerializer
+    serializer_class = MeasureUnitsActionsSerializer
+    serializer_view_class = MeasureUnitsViewSerializer
     
     def list(self, request, *args, **kwargs):
         measure_units = self.get_queryset()
-        measure_units_serializer = self.serializer_class(measure_units, many = True)
+        measure_units_serializer = self.get_serializer(measure_units, many = True)
         return Response(measure_units_serializer.data,status=status.HTTP_200_OK)
 
 class PrivateMeasureUnitsModelViewSets(PrivateGeneralModelViewSets):

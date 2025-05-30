@@ -17,11 +17,12 @@ from apps.features.user.api.serializers.serializers import (
 # Create your views here.
 
 class PublicUsersViewSets(PublicGeneralViewSets):
-    serializer_class = UsersViewSerializer
+    serializer_class = UsersActionsSerializer
+    serializer_view_class = UsersViewSerializer
     
     def list(self, request, *args, **kwargs):
         users = self.get_queryset()
-        users_serializer = self.serializer_class(users, many = True)
+        users_serializer = self.get_serializer(users, many = True)
         return Response(users_serializer.data,status=status.HTTP_200_OK)
 
 class PrivateUsersModelViewSets(PrivateGeneralModelViewSets):

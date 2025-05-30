@@ -15,11 +15,12 @@ from apps.features.product.api.serializers.serializers import (
 )
 
 class PublicCategoriesProductViewSets(PublicGeneralViewSets):
-    serializer_class = CategoriesProductViewSerializer
+    serializer_class = CategoriesProductActionsSerializer
+    serializer_view_class = CategoriesProductViewSerializer
     
     def list(self, request, *args, **kwargs):
         categories_product = self.get_queryset()
-        categories_product_serializer = self.serializer_class(categories_product, many = True)
+        categories_product_serializer = self.get_serializer(categories_product, many = True)
         return Response(categories_product_serializer.data,status=status.HTTP_200_OK)
 
 class PrivateCategoriesProductModelViewSets(PrivateGeneralModelViewSets):
