@@ -16,21 +16,21 @@ class ProductsViewSerializer(serializers.ModelSerializer):
     measure_unit = MeasureUnitsViewSerializer()
     category = CategoriesProductViewSerializer()
     
-    def to_representation(self, instance):
-        return {
-            'id': instance.id,
-            'name': instance.name,
-            'description': instance.description,
-            'measure_unit': {
-                'id': instance.measure_unit.id,
-                'description': instance.measure_unit.description
-            } if instance.measure_unit else "",
-            'category': {
-                'id': instance.category.id,
-                'description': instance.category.description
-            } if instance.category else "",
-            'image': instance.image.url if instance.image != "" else ""
-        }
+    # def to_representation(self, instance):
+    #     return {
+    #         'id': instance.id,
+    #         'name': instance.name,
+    #         'description': instance.description,
+    #         'measure_unit': {
+    #             'id': instance.measure_unit.id,
+    #             'description': instance.measure_unit.description
+    #         } if instance.measure_unit else "",
+    #         'category': {
+    #             'id': instance.category.id,
+    #             'description': instance.category.description
+    #         } if instance.category else "",
+    #         'image': instance.image.url if instance.image != "" else ""
+    #     }
 
 class ProductsActionsSerializer(serializers.ModelSerializer):
     class Meta:
