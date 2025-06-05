@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.conf.urls.static import static
 # drf
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
@@ -52,6 +53,8 @@ urlpatterns = [
     path('product/', include(('apps.features.product.api.urls.routers','product'))),
 ]
 
+# 
+
 # development
 if settings.DEBUG:
     urlpatterns += [
@@ -63,3 +66,5 @@ if settings.DEBUG:
         path('redoc<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-redoc-json'),
         path('redoc/', login_required(schema_view.with_ui('redoc', cache_timeout=0)), name='schema-redoc-ui'),
     ]
+    #Media Files.
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

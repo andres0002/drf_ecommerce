@@ -1,3 +1,4 @@
+Parsers para manejo de imgs.
 # ------------------------------------------------views auth_own-------------------------------------------------------
 # 1. caso de uso -> si ya tiene un token elimina las sessions y realiza el login.
 # # gte -> mayor o igual.

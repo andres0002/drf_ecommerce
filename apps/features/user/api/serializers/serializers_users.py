@@ -86,3 +86,12 @@ class UsersActionsSerializer(serializers.ModelSerializer):
         if permissions is not None:
             instance.user_permissions.set(permissions)
         return instance
+
+class UsersSetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=5, max_length=128, write_only=True)
+    password2 = serializers.CharField(min_length=5, max_length=128, write_only=True)
+    
+    def validate(self, data):
+        if data.get('password') != data.get('password2'):
+            raise serializers.ValidationError({'field': 'Las contraseñas no son iguales.'})
+        return data

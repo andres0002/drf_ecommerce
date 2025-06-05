@@ -3,7 +3,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 # third
-from simple_history.models import HistoricalRecords
 # own
 from apps.core.models import BaseModels
 
@@ -44,7 +43,7 @@ class Users(AbstractBaseUser, PermissionsMixin, BaseModels):
     lastname = models.CharField(max_length=255, blank=True, null=True)
     image = models.ImageField(upload_to='user/profile/image/', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
-    historical = HistoricalRecords()
+    phone = models.CharField('Phone Number', max_length=15, null=True, blank=True)
     objects = UsersManager()
 
     USERNAME_FIELD = 'username'
