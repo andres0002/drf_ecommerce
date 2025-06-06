@@ -2,8 +2,12 @@
 # django
 from django.contrib.auth import get_permission_codename
 # drf
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 # third
+from drf_yasg.utils import swagger_auto_schema
 # own
 
 class ExplicitPermissionRequiredMixin:
@@ -188,3 +192,30 @@ class AutoPermissionRequiredMixin:
         if not self.has_action_permission():
             raise PermissionDenied("No tienes permiso para realizar esta acción.")
         return super().initial(request, *args, **kwargs)
+
+class BulkDeleteLogicalAndDirectDisabledMixin:
+    @swagger_auto_schema(
+        method='delete',
+        request_body=None,  # No se espera un body, ya que está deshabilitado
+        responses={405: 'Method Not Allowed'},
+        operation_summary="❌ Este endpoint está deshabilitado para este recurso.", # comment endpoint.
+        operation_description="❌ Este endpoint está deshabilitado para este recurso.",
+        auto_schema=None  # <- Evita heredar o construir automáticamente respuestas previas
+    )
+    # Deshabilitar el action bulk_delete_logical
+    @action(detail=False, methods=['delete'], url_path='bulk_delete_logical')
+    def bulk_delete_logical(self, request):
+        return Response({'detail': 'This action is not allowed on this view.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @swagger_auto_schema(
+        method='delete',
+        request_body=None,  # No se espera un body, ya que está deshabilitado
+        responses={405: 'Method Not Allowed'},
+        operation_summary="❌ Este endpoint está deshabilitado para este recurso.", # comment endpoint.
+        operation_description="❌ Este endpoint está deshabilitado para este recurso.",
+        auto_schema=None  # <- Evita heredar o construir automáticamente respuestas previas
+    )
+    # Deshabilitar el action bulk_delete_direct
+    @action(detail=False, methods=['delete'], url_path='bulk_delete_direct')
+    def bulk_delete_direct(self, request):
+        return Response({'detail': 'This action is not allowed on this view.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

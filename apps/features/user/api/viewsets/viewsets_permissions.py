@@ -9,6 +9,7 @@ from apps.core.api.viewsets.viewsets import (
     PublicGeneralViewSets,
     PrivateGeneralModelViewSets
 )
+from apps.core.mixins import BulkDeleteLogicalAndDirectDisabledMixin
 from apps.features.user.api.serializers.serializers import (
     UserPermissionsViewSerializer,
     UserPermissionsActionsSerializer
@@ -29,7 +30,7 @@ class PublicUserPermissionsViewSets(PublicGeneralViewSets):
         permissions_serializer = self.get_serializer(permissions, many = True)
         return Response(permissions_serializer.data,status=status.HTTP_200_OK)
 
-class PrivateUserPermissionsModelViewSets(PrivateGeneralModelViewSets):
+class PrivateUserPermissionsModelViewSets(BulkDeleteLogicalAndDirectDisabledMixin, PrivateGeneralModelViewSets):
     serializer_view_class = UserPermissionsViewSerializer
     serializer_class = UserPermissionsActionsSerializer
     

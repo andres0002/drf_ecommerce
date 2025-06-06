@@ -9,6 +9,7 @@ from apps.core.api.viewsets.viewsets import (
     PublicGeneralViewSets,
     PrivateGeneralModelViewSets
 )
+from apps.core.mixins import BulkDeleteLogicalAndDirectDisabledMixin
 from apps.features.user.api.serializers.serializers import (
     GroupsViewSerializer,
     GroupsActionsSerializer
@@ -29,7 +30,7 @@ class PublicGroupsViewSets(PublicGeneralViewSets):
         groups_serializer = self.get_serializer(groups, many = True)
         return Response(groups_serializer.data,status=status.HTTP_200_OK)
 
-class PrivateGroupsModelViewSets(PrivateGeneralModelViewSets):
+class PrivateGroupsModelViewSets(BulkDeleteLogicalAndDirectDisabledMixin, PrivateGeneralModelViewSets):
     serializer_view_class = GroupsViewSerializer
     serializer_class = GroupsActionsSerializer
     
