@@ -50,7 +50,7 @@ OWN_APPS = [
     'apps.features.auth_own',
     'apps.features.user',
     'apps.features.product',
-    'apps.features.expense_manager',
+    'apps.features.expense',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS

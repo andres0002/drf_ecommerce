@@ -5,7 +5,7 @@
 from rest_framework.routers import DefaultRouter
 # third
 # own
-from apps.features.product.api.views.views import (
+from apps.features.product.api.viewsets.viewsets import (
     PublicMeasureUnitsViewSets,
     PrivateMeasureUnitsModelViewSets,
     PublicCategoriesProductViewSets,

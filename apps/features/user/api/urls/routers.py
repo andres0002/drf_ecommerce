@@ -4,7 +4,7 @@
 from rest_framework.routers import DefaultRouter
 # third
 # own
-from apps.features.user.api.views.views import (
+from apps.features.user.api.viewsets.viewsets import (
     PublicGroupsViewSets,
     PrivateGroupsModelViewSets,
     PublicUserPermissionsViewSets,

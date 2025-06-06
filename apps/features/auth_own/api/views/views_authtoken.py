@@ -1,7 +1,6 @@
 # py
 from datetime import datetime
 # django
-from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
 # drf
 from rest_framework import status
@@ -12,11 +11,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import get_authorization_header
 # third
-from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 # own
 from apps.features.auth_own.authentication import ExpiringTokenAuthentication
-from apps.features.user.models import Users
 from apps.features.user.api.serializers.serializers import UsersViewSerializer
 
 # Create your views here.
@@ -153,17 +151,21 @@ class RefreshToken(APIView):
             }, status=status.HTTP_401_UNAUTHORIZED)
 
         token_key = auth_header[1].decode()
-        model = Token
         try:
-            token = model.objects.select_related('user').get(key=token_key)
+            token = Token.objects.select_related('user').get(key=token_key)
             user = token.user
-        except model.DoesNotExist:
+        except Token.DoesNotExist:
             return Response({
                 "detail": "Token inválido"
             }, status=status.HTTP_401_UNAUTHORIZED)
 
         expiring_auth = ExpiringTokenAuthentication()
-        token = expiring_auth.token_expire_handler(token, model, user)
+        token, token_expired = expiring_auth.token_expire_handler(token, Token, user)
+        if token_expired:
+            # se elimina el token.
+            token.delete()
+            # se actualiza el token sin necesidad de cerrar las sessions.
+            token = Token.objects.create(user=user)
 
         user_serializer = UsersViewSerializer(user)
         return Response({

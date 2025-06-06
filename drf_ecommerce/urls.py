@@ -51,9 +51,8 @@ urlpatterns = [
     path('auth/', include(('apps.features.auth_own.api.urls.urls','auth'))),
     path('user/', include(('apps.features.user.api.urls.routers','user'))),
     path('product/', include(('apps.features.product.api.urls.routers','product'))),
+    path('expense/', include(('apps.features.expense.api.urls.routers','expense'))),
 ]
-
-# 
 
 # development
 if settings.DEBUG:
@@ -61,10 +60,10 @@ if settings.DEBUG:
         # urls django
         path('accounts/', include('django.contrib.auth.urls')),
         # urls swagger documentation.
-        path('swagger<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-swagger-json'),
         path('swagger/', login_required(schema_view.with_ui('swagger', cache_timeout=0)), name='schema-swagger-ui'),
-        path('redoc<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-redoc-json'),
+        path('swagger<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-swagger-json'),
         path('redoc/', login_required(schema_view.with_ui('redoc', cache_timeout=0)), name='schema-redoc-ui'),
+        path('redoc<format>/', login_required(schema_view.without_ui(cache_timeout=0)), name='schema-redoc-json'),
     ]
     #Media Files.
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
