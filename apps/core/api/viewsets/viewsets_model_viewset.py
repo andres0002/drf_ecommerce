@@ -2,7 +2,7 @@
 # django
 # drf
 from rest_framework import status
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -27,7 +27,7 @@ class AutoTagSchema(SwaggerAutoSchema):
             return [f"🔹 {model.__name__}"]
         return ['NoTag']
 
-class PublicGeneralModelViewSets(ExplicitPermissionRequiredMixin, viewsets.ModelViewSet):
+class PublicGeneralModelViewSets(ExplicitPermissionRequiredMixin, ModelViewSet):
     authentication_classes = []  # <- Desactiva autenticación automática
     permission_classes = (AllowAny,)
     
@@ -78,7 +78,7 @@ class PublicGeneralModelViewSets(ExplicitPermissionRequiredMixin, viewsets.Model
         deleted, _ = self.get_queryset().filter(id__in=ids).delete()
         return Response({'deleted': deleted}, status=status.HTTP_204_NO_CONTENT)
 
-class PrivateGeneralModelViewSets(AutoPermissionRequiredMixin, viewsets.ModelViewSet):
+class PrivateGeneralModelViewSets(AutoPermissionRequiredMixin, ModelViewSet):
     # authentication_classes = (CustomAuthentication,)
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)

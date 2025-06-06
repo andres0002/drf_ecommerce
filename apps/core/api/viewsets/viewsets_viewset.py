@@ -2,7 +2,7 @@
 # django
 from django.shortcuts import get_object_or_404
 # drf
-from rest_framework import viewsets
+from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
 # third
 from drf_yasg.inspectors import SwaggerAutoSchema
@@ -23,7 +23,7 @@ class AutoTagSchema(SwaggerAutoSchema):
             return [f"🔹 {model.__name__}"]
         return ['NoTag']
 
-class PublicGeneralViewSets(ExplicitPermissionRequiredMixin, viewsets.ViewSet):
+class PublicGeneralViewSets(ExplicitPermissionRequiredMixin, ViewSet):
     authentication_classes = []  # <- Desactiva autenticación automática
     permission_classes = (AllowAny,)
     
@@ -63,7 +63,7 @@ class PublicGeneralViewSets(ExplicitPermissionRequiredMixin, viewsets.ViewSet):
 
         return obj
 
-class PrivateGeneralViewSets(AutoPermissionRequiredMixin, viewsets.ViewSet):
+class PrivateGeneralViewSets(AutoPermissionRequiredMixin, ViewSet):
     # authentication_classes = (CustomAuthentication,)
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)

@@ -1,7 +1,7 @@
 # py
 # django
 # drf
-from rest_framework import viewsets
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
 # third
 from drf_yasg.inspectors import SwaggerAutoSchema
@@ -22,7 +22,7 @@ class AutoTagSchema(SwaggerAutoSchema):
             return [f"🔹 {model.__name__}"]
         return ['NoTag']
 
-class PublicGeneralGenericViewSets(ExplicitPermissionRequiredMixin, viewsets.GenericViewSet):
+class PublicGeneralGenericViewSets(ExplicitPermissionRequiredMixin, GenericViewSet):
     authentication_classes = []  # <- Desactiva autenticación automática
     permission_classes = (AllowAny,)
     
@@ -41,7 +41,7 @@ class PublicGeneralGenericViewSets(ExplicitPermissionRequiredMixin, viewsets.Gen
         model = self.get_serializer_class().Meta.model
         return model.objects.filter(is_active=True)
 
-class PrivateGeneralGenericViewSets(AutoPermissionRequiredMixin, viewsets.GenericViewSet):
+class PrivateGeneralGenericViewSets(AutoPermissionRequiredMixin, GenericViewSet):
     # authentication_classes = (CustomAuthentication,)
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
