@@ -115,7 +115,7 @@ class Expenses(BaseModels):
 
     def __str__(self):
         """Unicode representation of Expenses."""
-        self.voucher_number
+        return self.voucher_number
 
 class Mermas(BaseModels):
     """Model definition for Mermas."""

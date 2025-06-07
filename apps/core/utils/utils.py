@@ -1,5 +1,6 @@
 # py
 import re
+from datetime import datetime
 # django
 # drf
 from rest_framework.response import Response
@@ -53,3 +54,7 @@ def validate_files_no_copy(request, field, update=False):
         request[field] = None if type(request[field]) == str else request[field]
     request._mutable = False
     return request
+
+def format_date(date):
+    date = datetime.strptime(date, "%d/%m/%y")
+    return f"{date.year}-{date.month}-{date.day}"
