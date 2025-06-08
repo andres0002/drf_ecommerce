@@ -11,7 +11,6 @@ from django.contrib.auth.tokens import default_token_generator
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
 # third
 from drf_yasg import openapi # type: ignore
 from drf_yasg.utils import swagger_auto_schema # type: ignore
