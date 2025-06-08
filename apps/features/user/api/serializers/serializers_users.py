@@ -87,10 +87,24 @@ class UsersActionsSerializer(serializers.ModelSerializer):
             instance.user_permissions.set(permissions)
         return instance
 
-class UsersSetPasswordSerializer(serializers.Serializer):
+class UsersChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=5, max_length=128, write_only=True)
     password2 = serializers.CharField(min_length=5, max_length=128, write_only=True)
     
+    def validate(self, data):
+        if data.get('password') != data.get('password2'):
+            raise serializers.ValidationError({'field': 'Las contraseñas no son iguales.'})
+        return data
+
+class UsersResetPasswordRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class UsersResetPasswordConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+    password = serializers.CharField()
+    password2 = serializers.CharField()
+
     def validate(self, data):
         if data.get('password') != data.get('password2'):
             raise serializers.ValidationError({'field': 'Las contraseñas no son iguales.'})

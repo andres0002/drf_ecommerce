@@ -68,11 +68,11 @@ class ExplicitPermissionRequiredMixin:
         if user.is_authenticated and user.is_superuser and user.is_active:
             return True
         
-        # Acciones protegidas: requieren permisos explícitos
         perms = self.get_required_permissions()
         if not perms:
-            return False  # Si no hay permisos definidos, deniega
+            return True  # Si no hay permisos definidos, permite
 
+        # Acciones protegidas: requieren permisos explícitos
         if user.is_authenticated and user.is_staff and user.is_active:
             if isinstance(perms, str):
                 perms = [perms]

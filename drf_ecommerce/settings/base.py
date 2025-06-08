@@ -197,6 +197,9 @@ SIMPLE_JWT = {
 # authtoken
 TOKEN_EXPIRED_AFTER_SECONDS = 900 # 900 -> seconds -> equivalentes a 15 minutes -> expired token.
 
+# default_token_generator
+PASSWORD_RESET_TIMEOUT = 900 # 900 -> seconds -> equivalentes a 15 minutes -> expired token.
+
 # config cors
 # CORS_ALLOWED_ORIGINS = [
 #     "http://127.0.0.1:3000",
@@ -213,3 +216,55 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # SETTINGS OWN_APPS
+
+# logs
+
+# DEBUG: Mensajes detallados, generalmente útiles para la depuración.
+
+# INFO: Mensajes informativos sobre el funcionamiento normal de la aplicación.
+
+# WARNING: Mensajes que indican situaciones inusuales pero no críticas.
+
+# ERROR: Mensajes que indican errores que afectan a la funcionalidad.
+
+# CRITICAL: Errores graves que probablemente causen la falla de la aplicación.
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '[{levelname}] {asctime} {name} | {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'level': 'DEBUG', # Captura todos los niveles de log, incluyendo DEBUG
+        },
+        'file_user_viewsets': {
+            'level': 'DEBUG', # Captura todos los niveles de log, incluyendo DEBUG
+            'class': 'logging.FileHandler',
+            # Usamos str() para convertir la ruta de Path a una cadena
+            'filename': str(BASE_DIR / 'logs' / 'user' / 'reset_password_request.log'),
+            'formatter': 'verbose',
+        },
+    },
+
+    'loggers': {
+        # Logger para la app contact views.
+        'apps.features.user.api.viewsets.viewsets_users': {
+            'handlers': ['console', 'file_user_viewsets'],
+            'level': 'DEBUG', # Captura todos los niveles de log para este logger
+            'propagate': False, # evita que el log se propague a loggers de nivel superior (evita mensajes duplicados).
+        },
+    }
+}

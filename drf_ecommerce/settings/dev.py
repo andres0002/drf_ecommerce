@@ -22,3 +22,11 @@ DATABASES = {
         'NAME': BASE_DIR / config("DB_NAME_DEV"),
     }
 }
+
+# config send emails.
+EMAIL_BACKEND = config('EMAIL_BACKEND_DEV')
+EMAIL_HOST = config('EMAIL_HOST_DEV')
+EMAIL_PORT = config('EMAIL_PORT_DEV', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS_DEV', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER_DEV')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD_DEV')

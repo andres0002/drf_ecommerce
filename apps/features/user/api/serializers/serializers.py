@@ -14,5 +14,7 @@ from apps.features.user.api.serializers.serializers_permissions import (
 from apps.features.user.api.serializers.serializers_users import (
     UsersViewSerializer,
     UsersActionsSerializer,
-    UsersSetPasswordSerializer
+    UsersChangePasswordSerializer,
+    UsersResetPasswordRequestSerializer,
+    UsersResetPasswordConfirmSerializer
 )
