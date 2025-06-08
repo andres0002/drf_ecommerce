@@ -7,9 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 # third
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg.inspectors import SwaggerAutoSchema
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from drf_yasg.utils import swagger_auto_schema # type: ignore
+from drf_yasg.inspectors import SwaggerAutoSchema # type: ignore
+from rest_framework_simplejwt.authentication import JWTAuthentication # type: ignore
 # own
 # from apps.features.auth_own.authentication import CustomAuthentication
 from apps.core.mixins import (

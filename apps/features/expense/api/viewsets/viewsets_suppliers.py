@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 # thrid
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi # type: ignore
+from drf_yasg.utils import swagger_auto_schema # type: ignore
 # own
 from apps.core.api.viewsets.viewsets import (
     PublicGeneralViewSets,

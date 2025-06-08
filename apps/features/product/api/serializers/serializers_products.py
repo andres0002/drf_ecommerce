@@ -15,6 +15,7 @@ class ProductsViewSerializer(serializers.ModelSerializer):
     
     measure_unit = MeasureUnitsViewSerializer()
     category = CategoriesProductViewSerializer()
+    stock = serializers.ReadOnlyField()  # <- Aquí accede a la propiedad @property del modelo
     
     # def to_representation(self, instance):
     #     return {

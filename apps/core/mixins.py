@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 # third
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema # type: ignore
 # own
 
 class ExplicitPermissionRequiredMixin:

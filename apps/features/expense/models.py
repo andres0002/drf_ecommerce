@@ -105,6 +105,7 @@ class Expenses(BaseModels):
     supplier = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
     payment_type = models.ForeignKey(PaymentTypes, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    category = models.ForeignKey(CategoriesExpense, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         """Meta definition for Expenses."""
@@ -124,7 +125,7 @@ class Mermas(BaseModels):
     date = models.DateField('Fecha de emisión de merma', auto_now=False, auto_now_add=False)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.DecimalField('Quantity', max_digits=7, decimal_places=2)
-    lost_modey = models.DecimalField('Dinero perdido', max_digits=7, decimal_places=2)
+    lost_modey = models.DecimalField('Dinero perdido', max_digits=10, decimal_places=2, default=0)
 
     class Meta:
         """Meta definition for Mermas."""
