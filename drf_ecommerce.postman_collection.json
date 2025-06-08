@@ -1627,7 +1627,7 @@
 									"response": []
 								},
 								{
-									"name": "Set Password",
+									"name": "Change Password",
 									"request": {
 										"auth": {
 											"type": "bearer",
@@ -1658,7 +1658,7 @@
 											}
 										},
 										"url": {
-											"raw": "{{hostname}}/user/private_users/1/set_password/",
+											"raw": "{{hostname}}/user/private_users/1/change_password/",
 											"host": [
 												"{{hostname}}"
 											],
@@ -1666,7 +1666,7 @@
 												"user",
 												"private_users",
 												"1",
-												"set_password",
+												"change_password",
 												""
 											]
 										}
@@ -1957,6 +1957,84 @@
 											"path": [
 												"user",
 												"public_users",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Reset Password Request",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{token}}",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"admin_tests@yopmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostname}}/user/public_users/reset_password_request/",
+											"host": [
+												"{{hostname}}"
+											],
+											"path": [
+												"user",
+												"public_users",
+												"reset_password_request",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Reset Password Confirm",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{token}}",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"uid\": \"MQ\",\r\n    \"token\": \"cr38xz-0fedc036fe742ae4bc3d714425db674d\",\r\n    \"password\": \"12345\",\r\n    \"password2\": \"12345\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostname}}/user/public_users/reset_password_confirm/",
+											"host": [
+												"{{hostname}}"
+											],
+											"path": [
+												"user",
+												"public_users",
+												"reset_password_confirm",
 												""
 											]
 										}
@@ -3128,7 +3206,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\": \"test2@yopmail.com\",\r\n    \"password\": \"12345\",\r\n    \"name\": \"test2\",\r\n    \"lastname\": \"lastname\"\r\n}",
+											"raw": "{\r\n    \"name\": \"Factura\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3509,7 +3587,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\": \"test2@yopmail.com\",\r\n    \"password\": \"12345\",\r\n    \"name\": \"test2\",\r\n    \"lastname\": \"lastname\"\r\n}",
+											"raw": "{\r\n  \"ruc\": \"01234567896\",\r\n  \"business_name\": \"supplier 6\",\r\n  \"address\": \"address 6\",\r\n  \"phone\": \"0123456789-0006\",\r\n  \"email\": \"supplier6@yopmail.com\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3562,6 +3640,49 @@
 												"private_suppliers",
 												"{id}",
 												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Search Supplier By Ruc",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token_jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Token {{token}}",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{hostname}}/expense/private_suppliers/search_supplier_by_ruc/?ruc=01234567891",
+											"host": [
+												"{{hostname}}"
+											],
+											"path": [
+												"expense",
+												"private_suppliers",
+												"search_supplier_by_ruc",
+												""
+											],
+											"query": [
+												{
+													"key": "ruc",
+													"value": "01234567891"
+												}
 											]
 										}
 									},
@@ -3890,7 +4011,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\": \"test2@yopmail.com\",\r\n    \"password\": \"12345\",\r\n    \"name\": \"test2\",\r\n    \"lastname\": \"lastname\"\r\n}",
+											"raw": "{\r\n    \"name\": \"Tarjeta de Crédito\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -4652,7 +4773,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\": \"test2@yopmail.com\",\r\n    \"password\": \"12345\",\r\n    \"name\": \"test2\",\r\n    \"lastname\": \"lastname\"\r\n}",
+											"raw": "{\r\n  \"date\": \"2025-06-07\",\r\n  \"quantity\": \"10.0\",\r\n  \"unit_price\": \"2.0\",\r\n  \"voucher_number\": \"FAC-0000000001\",\r\n  \"total\": \"20.0\",\r\n  \"voucher\": 1,\r\n  \"user\": 1,\r\n  \"supplier\": 1,\r\n  \"payment_type\": 1,\r\n  \"product\": 1\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
